@@ -1,6 +1,12 @@
+-- Authorities
+INSERT IGNORE INTO authorities (authority_id, authority_name)
+VALUES
+(1, 'ROLE_STUDENT'),
+(2, 'ROLE_INSTRUCTOR'),
+(4, 'ROLE_ADMIN');
+
 -- Users
 -- Demo password for all users: password123
-
 INSERT IGNORE INTO users
 (username, password, enabled, authority_id)
 VALUES
