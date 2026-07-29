@@ -1,3 +1,21 @@
+-- Users
+-- Demo password for all users: password123
+
+INSERT IGNORE INTO users
+(username, password, enabled, authority_id)
+VALUES
+('student1','$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iYqiSf4LYJzRm5d1Q3f6HcKf7eWm',TRUE,1);
+
+INSERT IGNORE INTO users
+(username, password, enabled, authority_id)
+VALUES
+('instructor1','$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iYqiSf4LYJzRm5d1Q3f6HcKf7eWm',TRUE,2);
+
+INSERT IGNORE INTO users
+(username, password, enabled, authority_id)
+VALUES
+('admin1','$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iYqiSf4LYJzRm5d1Q3f6HcKf7eWm',TRUE,4);
+
 -- Courses
 INSERT IGNORE INTO courses
 (course_code, course_name, category, description,
