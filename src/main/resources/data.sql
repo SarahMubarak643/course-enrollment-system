@@ -10,17 +10,17 @@ VALUES
 INSERT IGNORE INTO users
 (username, password, enabled, authority_id)
 VALUES
-('student1','$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iYqiSf4LYJzRm5d1Q3f6HcKf7eWm',TRUE,1);
+('student1','$2a$10$HmYX4v/S7rDWt1MnHjMer.S0hl8kLW3N8cmKK5S0Mde8ccwy50xP2',TRUE,1);
 
 INSERT IGNORE INTO users
 (username, password, enabled, authority_id)
 VALUES
-('instructor1','$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iYqiSf4LYJzRm5d1Q3f6HcKf7eWm',TRUE,2);
+('instructor1','$2a$10$HmYX4v/S7rDWt1MnHjMer.S0hl8kLW3N8cmKK5S0Mde8ccwy50xP2',TRUE,2);
 
 INSERT IGNORE INTO users
 (username, password, enabled, authority_id)
 VALUES
-('admin1','$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iYqiSf4LYJzRm5d1Q3f6HcKf7eWm',TRUE,4);
+('admin1','$2a$10$HmYX4v/S7rDWt1MnHjMer.S0hl8kLW3N8cmKK5S0Mde8ccwy50xP2',TRUE,4);
 
 -- Courses
 INSERT IGNORE INTO courses
