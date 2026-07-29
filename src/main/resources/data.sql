@@ -52,7 +52,7 @@ VALUES
 INSERT IGNORE INTO students
 (student_number, full_name, email, active, created_at)
 VALUES
-('STU001', 'Sarah Mubarak', 'sara@example.com', TRUE, NOW());
+('STU0011', 'Sarah Mubarak', 'sara@example.com', TRUE, NOW());
 
 INSERT IGNORE INTO students
 (student_number, full_name, email, active, created_at)
