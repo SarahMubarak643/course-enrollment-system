@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Course</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<h1>Add Course</h1>
+
+<form th:action="@{/courses}" th:object="${course}" method="post">
+
+    <label>Course Code:</label>
+    <input type="text" th:field="*{courseCode}">
+    <span th:if="${#fields.hasErrors('courseCode')}"
+          th:errors="*{courseCode}"></span>
+    <br><br>
+
+    <label>Course Name:</label>
+    <input type="text" th:field="*{courseName}">
+    <span th:if="${#fields.hasErrors('courseName')}"
+          th:errors="*{courseName}"></span>
+    <br><br>
+
+    <label>Category:</label>
+    <input type="text" th:field="*{category}">
+    <span th:if="${#fields.hasErrors('category')}"
+          th:errors="*{category}"></span>
+    <br><br>
+
+    <label>Description:</label>
+    <input type="text" th:field="*{description}">
+    <span th:if="${#fields.hasErrors('description')}"
+          th:errors="*{description}"></span>
+    <br><br>
+
+    <label>Duration Hours:</label>
+    <input type="number" th:field="*{durationHours}">
+    <span th:if="${#fields.hasErrors('durationHours')}"
+          th:errors="*{durationHours}"></span>
+    <br><br>
+
+    <label>Capacity:</label>
+    <input type="number" th:field="*{capacity}">
+    <span th:if="${#fields.hasErrors('capacity')}"
+          th:errors="*{capacity}"></span>
+    <br><br>
+
+    <button type="submit">Add Course</button>
+
+</form>
+
+</body>
+</html>
