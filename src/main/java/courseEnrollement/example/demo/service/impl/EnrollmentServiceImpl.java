@@ -2,7 +2,9 @@ package courseEnrollement.example.demo.service.impl;
 
 import courseEnrollement.example.demo.entity.Course;
 import courseEnrollement.example.demo.entity.Enrollment;
+import courseEnrollement.example.demo.entity.EnrollmentStatus;
 import courseEnrollement.example.demo.entity.Student;
+import courseEnrollement.example.demo.exception.BusinessConflictException;
 import courseEnrollement.example.demo.exception.ResourceNotFoundException;
 import courseEnrollement.example.demo.repository.CourseRepository;
 import courseEnrollement.example.demo.repository.EnrollmentRepository;
@@ -51,6 +53,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    public List<Enrollment> getMyEnrollments(String username) {
+
+        Student student = studentRepository.findByUserUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No student profile is linked to this account"));
+
+        return enrollmentRepository.findByStudentStudentId(student.getStudentId());
+    }
+
+    @Override
     public Enrollment enrollStudent(Long studentId, Long courseId) {
 
         Student student = studentRepository.findById(studentId)
@@ -64,7 +76,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         if (enrollmentRepository
                 .existsByStudentStudentIdAndCourseCourseId(studentId, courseId)) {
 
-            throw new IllegalArgumentException(
+            throw new BusinessConflictException(
                     "Student is already enrolled in this course"
             );
         }
@@ -73,7 +85,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 enrollmentRepository.countByCourseCourseId(courseId);
 
         if (currentEnrollments >= course.getCapacity()) {
-            throw new IllegalArgumentException("Course is full");
+            throw new BusinessConflictException("Course is full");
         }
 
         Enrollment enrollment = new Enrollment();
@@ -85,13 +97,50 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public Enrollment updateStatus(Long id, String status) {
+    public Enrollment updateStatus(Long id, String status, String reason) {
 
         Enrollment enrollment = enrollmentRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Enrollment not found with id: "+ id));
 
-        enrollment.setStatus(status);
+        EnrollmentStatus currentStatus;
+
+        try {
+            currentStatus = EnrollmentStatus.valueOf(enrollment.getStatus());
+        } catch (IllegalArgumentException ex) {
+            // Existing rows created before this enum existed might not
+            // match a known value; treat that as ENROLLED-like and let
+            // the requested value validation below still apply.
+            currentStatus = EnrollmentStatus.ENROLLED;
+        }
+
+        EnrollmentStatus requestedStatus;
+
+        try {
+            requestedStatus = EnrollmentStatus.valueOf(status);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException(
+                    "Unknown enrollment status: " + status
+                            + ". Valid values are: ENROLLED, APPROVED, REJECTED, WITHDRAWN, COMPLETED"
+            );
+        }
+
+        if (!currentStatus.canTransitionTo(requestedStatus.name())) {
+            throw new BusinessConflictException(
+                    "Cannot change enrollment status from "
+                            + currentStatus + " to " + requestedStatus
+            );
+        }
+
+        if (EnrollmentStatus.requiresReason(requestedStatus.name())
+                && (reason == null || reason.isBlank())) {
+            throw new IllegalArgumentException(
+                    "A reason is required when setting status to " + requestedStatus
+            );
+        }
+
+        enrollment.setStatus(requestedStatus.name());
+        enrollment.setReason(reason);
 
         return enrollmentRepository.save(enrollment);
     }

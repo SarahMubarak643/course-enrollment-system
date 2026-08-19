@@ -2,7 +2,9 @@ package courseEnrollement.example.demo.service.impl;
 
 import courseEnrollement.example.demo.entity.Course;
 import courseEnrollement.example.demo.repository.CourseRepository;
+import courseEnrollement.example.demo.repository.CourseSpecifications;
 import courseEnrollement.example.demo.service.CourseService;
+import courseEnrollement.example.demo.exception.BusinessConflictException;
 import courseEnrollement.example.demo.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
@@ -50,6 +52,16 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Page<Course> getCoursesPaginated(
+            String keyword, String category, Boolean active, Pageable pageable) {
+
+        return courseRepository.findAll(
+                CourseSpecifications.withFilters(keyword, category, active),
+                pageable
+        );
+    }
+
+    @Override
     public Optional<Course> getCourseById(Long id) {
         return courseRepository.findById(id);
     }
@@ -63,7 +75,7 @@ public class CourseServiceImpl implements CourseService {
     public Course createCourse(Course course) {
 
         if (courseRepository.existsByCourseCode(course.getCourseCode())) {
-            throw new IllegalArgumentException("Course code already exists");
+            throw new BusinessConflictException("Course code already exists");
         }
 
         return courseRepository.save(course);
@@ -77,7 +89,7 @@ public class CourseServiceImpl implements CourseService {
 
         if (!existingCourse.getCourseCode().equals(course.getCourseCode())
                 && courseRepository.existsByCourseCode(course.getCourseCode())) {
-            throw new IllegalArgumentException("Course code already exists");
+            throw new BusinessConflictException("Course code already exists");
         }
 
         existingCourse.setCourseCode(course.getCourseCode());
@@ -100,7 +112,7 @@ public class CourseServiceImpl implements CourseService {
         if (course.getCourseCode() != null) {
             if (!existingCourse.getCourseCode().equals(course.getCourseCode())
                     && courseRepository.existsByCourseCode(course.getCourseCode())) {
-                throw new IllegalArgumentException("Course code already exists");
+                throw new BusinessConflictException("Course code already exists");
             }
 
             existingCourse.setCourseCode(course.getCourseCode());

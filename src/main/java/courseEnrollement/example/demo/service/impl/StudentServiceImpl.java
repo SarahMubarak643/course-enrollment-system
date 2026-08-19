@@ -1,6 +1,7 @@
 package courseEnrollement.example.demo.service.impl;
 
 import courseEnrollement.example.demo.entity.Student;
+import courseEnrollement.example.demo.exception.BusinessConflictException;
 import courseEnrollement.example.demo.exception.ResourceNotFoundException;
 import courseEnrollement.example.demo.repository.StudentRepository;
 import courseEnrollement.example.demo.service.StudentService;
@@ -29,14 +30,21 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public Student getMyProfile(String username) {
+        return studentRepository.findByUserUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No student profile is linked to this account"));
+    }
+
+    @Override
     public Student createStudent(Student student) {
 
         if (studentRepository.existsByStudentNumber(student.getStudentNumber())) {
-            throw new IllegalArgumentException("Student number already exists");
+            throw new BusinessConflictException("Student number already exists");
         }
 
         if (studentRepository.existsByEmail(student.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new BusinessConflictException("Email already exists");
         }
 
         return studentRepository.save(student);
@@ -50,12 +58,12 @@ public class StudentServiceImpl implements StudentService {
 
         if (!existingStudent.getStudentNumber().equals(student.getStudentNumber())
                 && studentRepository.existsByStudentNumber(student.getStudentNumber())) {
-            throw new IllegalArgumentException("Student number already exists");
+            throw new BusinessConflictException("Student number already exists");
         }
 
         if (!existingStudent.getEmail().equals(student.getEmail())
                 && studentRepository.existsByEmail(student.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new BusinessConflictException("Email already exists");
         }
 
         existingStudent.setStudentNumber(student.getStudentNumber());

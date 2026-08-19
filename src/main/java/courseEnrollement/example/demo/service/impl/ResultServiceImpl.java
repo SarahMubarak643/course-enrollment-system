@@ -2,9 +2,12 @@ package courseEnrollement.example.demo.service.impl;
 
 import courseEnrollement.example.demo.entity.Enrollment;
 import courseEnrollement.example.demo.entity.Result;
+import courseEnrollement.example.demo.entity.Student;
 import courseEnrollement.example.demo.repository.EnrollmentRepository;
 import courseEnrollement.example.demo.repository.ResultRepository;
+import courseEnrollement.example.demo.repository.StudentRepository;
 import courseEnrollement.example.demo.service.ResultService;
+import courseEnrollement.example.demo.exception.BusinessConflictException;
 import courseEnrollement.example.demo.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +19,16 @@ public class ResultServiceImpl implements ResultService {
 
     private final ResultRepository resultRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final StudentRepository studentRepository;
 
     public ResultServiceImpl(
             ResultRepository resultRepository,
-            EnrollmentRepository enrollmentRepository) {
+            EnrollmentRepository enrollmentRepository,
+            StudentRepository studentRepository) {
 
         this.resultRepository = resultRepository;
         this.enrollmentRepository = enrollmentRepository;
+        this.studentRepository = studentRepository;
     }
 
     @Override
@@ -41,6 +47,16 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
+    public List<Result> getMyResults(String username) {
+
+        Student student = studentRepository.findByUserUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No student profile is linked to this account"));
+
+        return resultRepository.findByEnrollmentStudentStudentId(student.getStudentId());
+    }
+
+    @Override
     public Result createResult(
             Long enrollmentId,
             Double score,
@@ -51,7 +67,7 @@ public class ResultServiceImpl implements ResultService {
                         new ResourceNotFoundException("Enrollment not found with id: " + enrollmentId));
 
         if (resultRepository.existsByEnrollmentEnrollmentId(enrollmentId)) {
-            throw new IllegalArgumentException(
+            throw new BusinessConflictException(
                     "Result already exists for this enrollment"
             );
         }
