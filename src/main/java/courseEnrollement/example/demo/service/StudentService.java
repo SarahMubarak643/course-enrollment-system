@@ -11,6 +11,8 @@ public interface StudentService {
 
     Optional<Student> getStudentById(Long id);
 
+    Student getMyProfile(String username);
+
     Student createStudent(Student student);
 
     Student updateStudent(Long id, Student student);

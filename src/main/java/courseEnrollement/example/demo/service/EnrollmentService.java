@@ -15,9 +15,11 @@ public interface EnrollmentService {
 
     List<Enrollment> getEnrollmentsByCourse(Long courseId);
 
+    List<Enrollment> getMyEnrollments(String username);
+
     Enrollment enrollStudent(Long studentId, Long courseId);
 
-    Enrollment updateStatus(Long id, String status);
+    Enrollment updateStatus(Long id, String status, String reason);
 
     void deleteEnrollment(Long id);
 }

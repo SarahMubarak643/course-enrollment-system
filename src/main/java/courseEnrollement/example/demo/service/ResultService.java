@@ -13,6 +13,8 @@ public interface ResultService {
 
     Optional<Result> getResultByEnrollment(Long enrollmentId);
 
+    List<Result> getMyResults(String username);
+
     Result createResult(
             Long enrollmentId,
             Double score,
