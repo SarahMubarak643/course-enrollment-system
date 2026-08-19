@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
@@ -42,6 +43,10 @@ public class Enrollment {
 
     @Column(name = "status", nullable = false, length = 30)
     private String status;
+
+    @Size(max = 255, message = "Reason must not exceed 255 characters")
+    @Column(name = "reason", length = 255)
+    private String reason;
 
     public Enrollment() {
     }
@@ -91,5 +96,23 @@ public class Enrollment {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    @Transient
+    public List<String> getAvailableActions() {
+        try {
+            EnrollmentStatus current = EnrollmentStatus.valueOf(status);
+            return List.copyOf(current.getAllowedNextStatuses());
+        } catch (IllegalArgumentException ex) {
+            return List.of();
+        }
     }
 }
