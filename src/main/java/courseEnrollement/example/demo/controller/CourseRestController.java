@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 
 import java.util.List;
 
@@ -32,10 +34,12 @@ public class CourseRestController {
 
     @GetMapping("/page")
     public Page<Course> getCoursesPaginated(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size) {
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Boolean active,
+            @PageableDefault(size = 10, sort = "courseName") Pageable pageable) {
 
-        return courseService.getCoursesPaginated(page, size);
+        return courseService.getCoursesPaginated(keyword, category, active, pageable);
     }
 
     @GetMapping("/{id}")

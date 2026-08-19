@@ -6,6 +6,7 @@ import courseEnrollement.example.demo.validator.StudentValidator;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,11 @@ public class StudentRestController {
     @GetMapping
     public List<Student> getAllStudents() {
         return studentService.getAllStudents();
+    }
+
+    @GetMapping("/me")
+    public Student getMyProfile(Authentication authentication) {
+        return studentService.getMyProfile(authentication.getName());
     }
 
     @GetMapping("/{id}")

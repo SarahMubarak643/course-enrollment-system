@@ -3,6 +3,7 @@ package courseEnrollement.example.demo.controller;
 import courseEnrollement.example.demo.entity.Result;
 import courseEnrollement.example.demo.service.ResultService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,11 @@ public class ResultRestController {
     @GetMapping
     public List<Result> getAllResults() {
         return resultService.getAllResults();
+    }
+
+    @GetMapping("/me")
+    public List<Result> getMyResults(Authentication authentication) {
+        return resultService.getMyResults(authentication.getName());
     }
 
     @GetMapping("/{id}")

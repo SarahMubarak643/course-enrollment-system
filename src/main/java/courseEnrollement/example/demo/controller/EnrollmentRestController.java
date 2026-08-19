@@ -3,6 +3,7 @@ package courseEnrollement.example.demo.controller;
 import courseEnrollement.example.demo.entity.Enrollment;
 import courseEnrollement.example.demo.service.EnrollmentService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,11 @@ public class EnrollmentRestController {
     @GetMapping
     public List<Enrollment> getAllEnrollments() {
         return enrollmentService.getAllEnrollments();
+    }
+
+    @GetMapping("/me")
+    public List<Enrollment> getMyEnrollments(Authentication authentication) {
+        return enrollmentService.getMyEnrollments(authentication.getName());
     }
 
     @GetMapping("/{id}")
@@ -59,10 +65,11 @@ public class EnrollmentRestController {
     @PutMapping("/{id}/status")
     public ResponseEntity<Enrollment> updateStatus(
             @PathVariable Long id,
-            @RequestParam String status) {
+            @RequestParam String status,
+            @RequestParam(required = false) String reason) {
 
         Enrollment enrollment =
-                enrollmentService.updateStatus(id, status);
+                enrollmentService.updateStatus(id, status, reason);
 
         return ResponseEntity.ok(enrollment);
     }

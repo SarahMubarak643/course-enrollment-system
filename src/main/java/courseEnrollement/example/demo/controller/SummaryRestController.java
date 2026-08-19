@@ -2,10 +2,12 @@ package courseEnrollement.example.demo.controller;
 
 import courseEnrollement.example.demo.service.SummaryService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,5 +24,17 @@ public class SummaryRestController {
     public ResponseEntity<Map<String, Object>> getSummary() {
 
         return ResponseEntity.ok(summaryService.getSummary());
+    }
+
+    @GetMapping("/courses")
+    public ResponseEntity<List<Map<String, Object>>> getEnrollmentsByCourse() {
+
+        return ResponseEntity.ok(summaryService.getEnrollmentsByCourse());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> getMySummary(Authentication authentication) {
+
+        return ResponseEntity.ok(summaryService.getMySummary(authentication.getName()));
     }
 }
