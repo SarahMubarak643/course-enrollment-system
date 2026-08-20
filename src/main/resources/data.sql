@@ -63,3 +63,8 @@ INSERT IGNORE INTO students
 (student_number, full_name, email, active, created_at)
 VALUES
 ('STU003', 'Rahaf Abdulaziz', 'Rahaf@example.com', TRUE, NOW());
+
+UPDATE students s
+JOIN users u ON u.username = 'student1'
+SET s.user_id = u.user_id
+WHERE s.student_number = 'STU0011' AND s.user_id IS NULL;
